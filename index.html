@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модификаторы Escape From Tarkov</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+            user-select: none;
+        }
+        body {
+            background: #2e2f2f;
+			
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .app {
+            
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(8px);
+            padding: 30px 28px 40px;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            color: #e8edf5;
+            margin: 0 0 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-left: 12px;
+        }
+        .total-area {
+            background: #0b121c;
+            border-radius: 80px;
+            padding: 16px 32px;
+            margin: 20px 0 30px 0;
+            text-align: center;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #334155;
+            box-shadow: inset 0 4px 6px rgba(0,0,0,0.6);
+        }
+        .total-label {
+            color: #b9c7dd;
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+        .total-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #c0d0f0, #f0f4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
+            transition: 0.2s;
+        }
+        .total-value.positive {
+            color: #6fcf97;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: #6fcf97;
+        }
+        .total-value.negative {
+            color: #f28b82;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: #f28b82;
+        }
+        .total-value.zero {
+            color: #facc15;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: #facc15;
+        }
+        .section-header {
+            display: flex;
+            gap: 16px;
+            margin-top: 28px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid #2a3a4e;
+            padding-bottom: 8px;
+        }
+        .section-header span {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #cbd5e1;
+            letter-spacing: 0.3px;
+            background: #1e2a3a;
+            padding: 4px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border: 1px solid #3b4a5e;
+        }
+        .mod-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 18px;
+            margin-bottom: 12px;
+        }
+        .mod-card {
+            background: #1e2b3c;
+            border-radius: 8px;
+            padding: 16px 10px 14px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 2px solid #2f4057;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #0f1620;
+            position: relative;
+            min-height: 190px;
+            justify-content: flex-start;
+        }
+		.mod-card.positive {
+            background: #2e3629;
+			background: linear-gradient(270deg,#202121,#2e2f2f);
+        }
+		.mod-card.negative {
+            background: #3d292a;
+			background: linear-gradient(to right, #3c2a2a, #1a1c1b);
+        }
+        .mod-card:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #0f1620;
+        }
+        .mod-card.active {
+            box-shadow: 0 0 0 2px #facc1566, 0 6px 0 #0f1620;
+            background: #253346;
+        }
+        .mod-card.positive.active {
+			background: linear-gradient(to right, #37551d, #242c28);
+            border-color: #4ade80;
+            box-shadow: 0 0 0 2px #4ade8066, 0 6px 0 #0f1620;
+        }
+        .mod-card.negative.active {
+			background: linear-gradient(to right, #643235, #242c28);
+            border-color: #f87171;
+            box-shadow: 0 0 0 2px #f8717166, 0 6px 0 #0f1620;
+        }
+        .mod-icon {
+            width: 64px;
+            height: 64px;
+            background: #2d3f54;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            box-shadow: inset 0 -3px 0 #131d29;
+            transition: 0.1s;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .mod-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .mod-card.active .mod-icon {
+            background: #3e536b;
+            box-shadow: inset 0 -3px 0 #1f2c3b;
+        }
+        .mod-name {
+            font-weight: 600;
+            color: #eef2f6;
+            font-size: 1rem;
+            margin: 2px 0 0px 0;
+        }
+        .mod-weight {
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #15212e;
+            padding: 2px 14px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 4px 0 6px 0;
+            color: #b9c7dd;
+        }
+        .mod-card.positive .mod-weight {
+            color: #4ade80;
+        }
+        .mod-card.negative .mod-weight {
+            color: #f87171;
+        }
+        .mod-description {
+            font-size: 0.8rem;
+            color: #eef2f6;
+            line-height: 1.4;
+            margin-top: 4px;
+            padding: 0 4px;
+            min-height: 2.8em;
+            border-top: 1px dashed #33495f;
+            padding-top: 6px;
+            width: 100%;
+            word-break: break-word;
+            opacity: 0.85;
+        }
+        .reset-area {
+            display: flex;
+            justify-content: center;
+            margin-top: 28px;
+            gap: 16px;
+			
+            align-items: center;
+        }
+        .reset-btn {
+            background: #2c3e54;
+            border: none;
+            color: #d1dcec;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.15s;
+            border: 1px solid #445a72;
+            box-shadow: 0 4px 0 #0f1722;
+            letter-spacing: 0.3px;
+        }
+        .reset-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #0f1722;
+        }
+        .reset-btn:hover {
+            background: #334b66;
+            color: white;
+        }
+        .win-message {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #facc15;
+            background: #1f2e3f;
+            padding: 8px 20px;
+            border-radius: 60px;
+            border: 1px solid #facc1540;
+            opacity: 0.8;
+        }
+        .footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        @media (max-width: 550px) {
+            .app { padding: 20px 16px; }
+            .mod-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .mod-card { min-height: 170px; padding: 12px 6px; }
+            .mod-description { font-size: 0.65rem; min-height: 2.2em; }
+            .mod-icon { width: 54px; height: 54px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <h1>
+        Модификаторы Escape From Tarkov
+        <span class="subtitle"></span>
+    </h1>
+    <div class="total-area">
+        <span class="total-value" id="totalDisplay">0</span>
+    </div>
+
+    <div class="section-header"><span>Личные положительные</span></div>
+    <div class="mod-grid" id="positiveMods"></div>
+
+    <div class="section-header"><span>Личные отрицательные</span></div>
+    <div class="mod-grid" id="negativeMods"></div>
+
+    <div class="footer">
+        <div class="reset-area">
+            <button class="reset-btn" id="resetBtn">⟲ сбросить всё</button>
+        </div>
+    </div>
+</div>
+<script>
+    (function() {
+        const positiveMods = [
+            { id: 'p1', name: 'Марафонец', weight: -3, description: 'Выносливость рук и ног тратится на 15% медленнее', image: 'img/p1.jpg' },
+            { id: 'p2', name: 'The Juice Time', weight: -2, description: 'При употреблении соков вы получаете эффект "На болеутоляющих" на 60 секунд', image: 'img/p2.jpg' },
+            { id: 'p3', name: 'Бизнесмен', weight: -1, description: 'Один раз в неделю вы получаете откаты за крышевание над некоторыми Дикими', image: 'img/p3.jpg' },
+            { id: 'p4', name: 'Геркулес', weight: -3, description: 'Стартовая "Сила" и "Выносливость" выше на 15 уровней', image: 'img/p4.jpg' },
+            { id: 'p5', name: 'Гиподипсия', weight: -2, description: 'Гидрация тратится на 15% медленее', image: 'img/p5.jpg' },
+			{ id: 'p6', name: 'Середнячок', weight: -10, description: 'Все умения со старта 25 уровня. Максимальный уровень всех умений 25', image: 'img/p6.jpg' },
+			{ id: 'p7', name: 'Медвежатник', weight: -6, description: 'При использовании механического ключа есть 20% шанс, что он не потеряет прочность', image: 'img/p7.jpg' },
+			{ id: 'p8', name: 'Ностальгия Моряка', weight: -2, description: 'При употреблении рыбных консервов персонаж получает эффект "Регенерация здоровья" на 10 секунд', image: 'img/p8.jpg' },
+			{ id: 'p9', name: 'Тарковский стрелок', weight: -3, description: 'Увеличивает скорость прокачки навыка болтовых винтовок на 100%. Стартовое значение умения "Болтовые винтовки" - 10 уровень', image: 'img/p9.jpg' },
+			{ id: 'p10', name: 'Спринтер', weight: -2, description: 'Скорость бега персонажа выше на 5%', image: 'img/p10.jpg' },
+			{ id: 'p11', name: 'Полифагия', weight: -2, description: 'Энергия тратится на 15% медленнее', image: 'img/p11.jpg' },
+			{ id: 'p12', name: 'KAPPA Protocol', weight: -21, description: 'Вы получаете Защищенный контейнер "Каппа" со старта', image: 'img/p12.jpg' },
+			{ id: 'p13', name: 'Кусторождённый', weight: -5, description: 'Задевание веток травы и кустов вызывает на 50% меньше шума и замедления', image: 'img/p13.jpg' },
+			{ id: 'p14', name: 'Молодость', weight: -3, description: 'Энергия тратится на 20% медленнее. Выносливость рук и ног выше на 10 едениц', image: 'img/p14.jpg' },
+			{ id: 'p15', name: 'Диета', weight: -1, description: 'Трата ресурсов всей провизии меньше на 50%', image: 'img/p15.jpg' },
+			{ id: 'p16', name: 'Тромбофилия', weight: -2, description: 'Шанс получить кровотечение уменьшается на 25%', image: 'img/p16.jpg' },
+			{ id: 'p17', name: 'Крепкие кости', weight: -3, description: 'Шанс сломать любую из конечностей уменьшается на 15%. Падение с высоты наносит на 15% меньше урона', image: 'img/p17.jpg' },
+        ];
+
+        const negativeMods = [
+            { id: 'n1', name: 'Гемофилия', weight: 2, description: 'Шанс получить кровотечение увеличивается на 25%', image: 'img/n1.jpg' },
+            { id: 'n2', name: 'Ай, болит!', weight: 2, description: 'Ресурс всех аптечек тратится на 25% сильнее', image: 'img/n2.jpg' },
+            { id: 'n3', name: 'Синдром хронической усталости', weight: 1, description: 'Энергия тратится на 15% быстрее', image: 'img/n3.jpg' },
+            { id: 'n4', name: 'Аллергик', weight: 3, description: 'У персонажа есть аллергия на 2 случайных предмета из провизии или медицинских препаратов', image: 'img/n4.jpg' },
+            { id: 'n5', name: 'Большое достоинство', weight: 1, description: 'Скорость бега меньше на 1%. Стоимость предметов у Терапевта меньше на 5%', image: 'img/n5.jpg' },
+			{ id: 'n6', name: 'Остеопороз', weight: 3, description: 'Шанс сломать любую конечность выше на 15%. Падение с высоты наносит на 15% больше урона', image: 'img/n6.jpg' },
+			{ id: 'n7', name: 'Необучаемый', weight: 4, description: 'Получение опыта для Умений уменьшено на 25% (кроме умения "Болтовые винтовки"). Максимальный уровень умений 30 (кроме "Ручное производство")', image: 'img/n7.jpg' },
+			{ id: 'n8', name: 'Карлик нос', weight: 2, description: 'Умение "Харизма" не прокачивается. Стоимость ассортимента всех торговцев выше на 20%', image: 'img/n8.jpg' },
+			{ id: 'n9', name: 'Сломанный защищенный контейнер', weight: 4, description: 'Защищенный контейнер ограничен деньгами, ключами, жетонами, спецоборудованием и некоторыми контейнерами', image: 'img/n9.jpg' },
+			{ id: 'n10', name: 'Истощение', weight: 4, description: 'Выносливость рук и ног восстанавливается на 15% медленнее', image: 'img/n10.jpg' },
+			{ id: 'n11', name: 'Полидипсия', weight: 1, description: 'Гидрация тратится на 15% быстрее', image: 'img/n11.jpg' },
+			{ id: 'n12', name: 'Доктор Джекил', weight: 1, description: 'Эффект "Свежие раны" остается до конца рейда', image: 'img/n12.jpg' },
+			{ id: 'n13', name: 'Неработающая барахолка', weight: 6, description: 'Торговля на Барахолке с другими игроками недоступна', image: 'img/n13.jpg' },
+        ];
+
+        const activeSet = new Set();
+        const positiveContainer = document.getElementById('positiveMods');
+        const negativeContainer = document.getElementById('negativeMods');
+        const totalDisplay = document.getElementById('totalDisplay');
+
+        function recalcAndUpdate() {
+            let sum = 0;
+            for (const modId of activeSet) {
+                const found = [...positiveMods, ...negativeMods].find(m => m.id === modId);
+                if (found) sum += found.weight;
+            }
+            totalDisplay.textContent = sum;
+            totalDisplay.classList.remove('positive', 'negative', 'zero');
+            if (sum > 0) {
+                totalDisplay.classList.add('positive');
+            } else if (sum < 0) {
+                totalDisplay.classList.add('negative');
+            } else {
+                totalDisplay.classList.add('zero');
+            }
+
+            document.querySelectorAll('.mod-card').forEach(card => {
+                const id = card.dataset.id;
+                if (activeSet.has(id)) card.classList.add('active');
+                else card.classList.remove('active');
+            });
+        }
+
+        function createCard(mod, type) {
+            const card = document.createElement('div');
+            card.className = `mod-card ${type}`;
+            card.dataset.id = mod.id;
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'mod-icon';
+            
+            const img = document.createElement('img');
+            img.src = mod.image || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" fill="%23334455"/%3E%3Ctext x="32" y="42" font-size="20" text-anchor="middle" fill="white"%3E?%3C/text%3E%3C/svg%3E';
+            img.alt = mod.name;
+            img.loading = 'lazy';
+            iconDiv.appendChild(img);
+
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'mod-name';
+            nameSpan.textContent = mod.name;
+
+            const weightSpan = document.createElement('div');
+            weightSpan.className = 'mod-weight';
+            const sign = mod.weight > 0 ? '+' : '';
+            weightSpan.textContent = `${sign}${mod.weight}`;
+
+            const descSpan = document.createElement('div');
+            descSpan.className = 'mod-description';
+            descSpan.textContent = mod.description || '';
+
+            card.appendChild(iconDiv);
+            card.appendChild(nameSpan);
+            card.appendChild(weightSpan);
+            card.appendChild(descSpan);
+
+            card.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const id = this.dataset.id;
+                if (activeSet.has(id)) activeSet.delete(id);
+                else activeSet.add(id);
+                recalcAndUpdate();
+            });
+
+            return card;
+        }
+
+        function renderMods() {
+            positiveContainer.innerHTML = '';
+            negativeContainer.innerHTML = '';
+
+            positiveMods.forEach(mod => {
+                const card = createCard(mod, 'positive');
+                positiveContainer.appendChild(card);
+            });
+
+            negativeMods.forEach(mod => {
+                const card = createCard(mod, 'negative');
+                negativeContainer.appendChild(card);
+            });
+
+            recalcAndUpdate();
+        }
+
+        function resetAll() {
+            activeSet.clear();
+            recalcAndUpdate();
+        }
+
+        renderMods();
+        document.getElementById('resetBtn').addEventListener('click', resetAll);
+    })();
+</script>
+</body>
+</html>
